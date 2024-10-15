@@ -1,91 +1,85 @@
+// Initialize default values
 var enterValue = "0";
 var previousValue = 0;
 var previousOperator = null;
 
-const screen = document.querySelector(".text");
-var main = document.querySelectorAll(".button"); // Select all buttons from index.
+// Select elements from the DOM
+const screenText = document.querySelector(".text");
+var buttons = document.querySelectorAll(".button"); // Select all buttons
 
-for (var i = 0; i < main.length; i++) {
-    main[i].addEventListener("click", function () { // Call buttonhandles function, when you click on button.
-        buttonhandles(event.target.innerHTML);
-    })
+// Add click event listeners to each button
+for (var i = 0; i < buttons.length; i++) {
+  buttons[i].addEventListener("click", function () {
+    buttonhandles(event.target.innerHTML); // Handle button clicks
+  });
 }
 
+// Handle button input (either a symbol or number)
 function buttonhandles(value) {
-    if (isNaN(value)) {
-        handlesSymbol(value); // Call handlesSymbol function with symbolic value.
-    }
-    else {
-        handlesValue(value); // Call handlesValue function with number value.
-    }
-    display();
+  if (isNaN(value)) {
+    handlesSymbol(value); // Handle non-numeric input
+  } else {
+    handlesValue(value); // Handle numeric input
+  }
+  display(); // Update display after handling input
 }
 
+// Update the entered value
 function handlesValue(value) {
-    if (enterValue === "0") { // Joint enter string.
-        enterValue = value;
-    }
-    else {
-        enterValue += value;
-    }
+  enterValue = enterValue === "0" ? value : enterValue + value;
 }
 
+// Handle symbols like C, ←, =, or operators
 function handlesSymbol(value) {
-    switch (value) {
-        case "C":
-            enterValue = "0";
-            previousValue = 0;
-            previousOperator = null;
-            break;
-        case "←":
-            l = enterValue.length;
-            if (l === 1)
-                enterValue = "0";
-            else
-                enterValue = enterValue.substring(0, l - 1);
-            break;
-        case "=":
-            if (previousOperator === null) {
-                return;
-            }
-            Operation(parseInt(enterValue));
-            enterValue = String(previousValue); // Number convert into strin.
-            previousOperator = null;
-            previousValue = 0;
-            break;
-        default:
-            handleMath(value); // Call handleMath function with arithmetic operator.
-            break;
-    }
+  switch (value) {
+    case "C": // Clear all values
+      enterValue = "0";
+      previousValue = 0;
+      previousOperator = null;
+      break;
+    case "←": // Backspace operation
+      enterValue = enterValue.length === 1 ? "0" : enterValue.slice(0, -1);
+      break;
+    case "=": // Perform calculation
+      if (previousOperator === null) return;
+      Operation(parseInt(enterValue));
+      enterValue = String(previousValue);
+      previousOperator = null;
+      previousValue = 0;
+      break;
+    default: // Handle arithmetic operators
+      handleMath(value);
+      break;
+  }
 }
 
+// Store the operator and prepare for the next input
 function handleMath(value) {
-    enterValueInt = parseInt(enterValue); // String convert into number for calculation.
-    previousOperator = value;
-    enterValue = "0";
-    if (previousValue === 0) {
-        previousValue = enterValueInt;
-    }
-    else {
-        Operation(enterValueInt);
-    }
+  const enterValueInt = parseInt(enterValue);
+  previousOperator = value;
+  enterValue = "0";
+
+  if (previousValue === 0) {
+    previousValue = enterValueInt;
+  } else {
+    Operation(enterValueInt);
+  }
 }
 
+// Perform the arithmetic operation
 function Operation(enterValueInt) {
-    if (previousOperator === "+") {
-        previousValue = previousValue + enterValueInt;
-    }
-    else if (previousOperator === "-") {
-        previousValue = previousValue - enterValueInt;
-    }
-    else if (previousOperator === "×") {
-        previousValue = previousValue * enterValueInt;
-    }
-    else {
-        previousValue = previousValue / enterValueInt;
-    }
+  if (previousOperator === "+") {
+    previousValue += enterValueInt;
+  } else if (previousOperator === "-") {
+    previousValue -= enterValueInt;
+  } else if (previousOperator === "×") {
+    previousValue *= enterValueInt;
+  } else {
+    previousValue /= enterValueInt;
+  }
 }
 
-function display() { // Display values on screen.
-    screen.innerHTML = enterValue;
+// Update the screen display
+function display() {
+  screenText.innerHTML = enterValue;
 }

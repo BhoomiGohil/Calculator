@@ -22,7 +22,7 @@ A simple and functional calculator application built to perform basic arithmetic
 1. Clone the repository:
    ```bash
    git clone https://github.com/BhoomiGohil/Calculator-Demo.git
-   cd Calculator
+   cd Calculator-Demo
    ```
 2. Open the `index.html` file in your browser.
 
